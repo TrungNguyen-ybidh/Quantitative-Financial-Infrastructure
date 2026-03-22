@@ -81,7 +81,7 @@ notebook==7.5.5
 notebook_shim==0.2.4
 numpy==2.4.3
 orjson==3.11.7
-packaging @ file:///opt/miniconda3/conda-bld/packaging_1761049079023/work
+packaging
 pandas==3.0.1
 pandocfilters==1.5.1
 parso==0.8.6
