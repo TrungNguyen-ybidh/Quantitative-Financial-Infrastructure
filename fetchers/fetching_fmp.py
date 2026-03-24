@@ -3,6 +3,10 @@ import pandas as pd
 import time
 from dotenv import load_dotenv
 import os
+import sys
+sys.path.append(os.path.abspath('..'))
+from endpoint_config import fmp_endpoints
+from pathlib import Path
 
 load_dotenv()
 api_key = os.getenv('FMP_api')
@@ -11,7 +15,58 @@ def fetch_data(url):
     response = requests.get(url)
     df = pd.DataFrame(response.json())
     return df
-    
+
+def fetch_fmp_data(symbols, api_key, time_sleep, endpoints_lst=None, period=None, limit=None):
+    ROOT = Path.cwd().parent
+    base_url = 'https://financialmodelingprep.com/stable'
+    endpoint_config = fmp_endpoints
+
+    if endpoints_lst is None:
+        for i, symbol in enumerate(symbols):
+            for config in endpoint_config:
+                dfs = []
+                endpoint = config["endpoint"]
+                params = config["params"].copy()
+                params["apikey"] = api_key
+                params['symbol'] = symbol  
+
+                url = f"{base_url}/{endpoint}"
+                response = requests.get(url, params=params).json()
+                dfs.append(pd.DataFrame(response))
+
+                if (i + 1) % 100 == 0:
+                    print(f"Progress: {i + 1} / {len(symbols)} fetched...")
+
+                results = pd.concat(dfs, ignore_index=True)
+                time.sleep(time_sleep)
+                results.to_csv(ROOT / 'data' / f"{symbol}_{endpoint}.csv", index=False)  
+                print(f"Saved {symbol}_{endpoint}.csv")                                  
+
+    else:
+        for i, symbol in enumerate(symbols):
+            dfs = []
+            for end_point in endpoints_lst:
+                params = {
+                    'apikey': api_key,
+                    'symbol': symbol
+                }
+                if period is not None:
+                    params["period"] = period
+                if limit is not None:
+                    params["limit"] = limit
+                url = f"{base_url}/{end_point}" 
+                response = requests.get(url, params=params).json()
+                dfs.append(pd.DataFrame(response))
+
+                time.sleep(time_sleep)
+                if (i + 1) % 100 == 0:
+                    print(f"Progress: {i + 1} / {len(symbols)} fetched...")
+
+                df = pd.concat(dfs, ignore_index=True)
+                df.to_csv(ROOT / 'data'/ 'raw' /f"{symbol}_{end_point}.csv", index=False)  
+                print(f"Saved {symbol}_{end_point}.csv")                                    
+
+
 def fetch_fmp_comp_info(symbol_list, api_key):
     url = 'https://financialmodelingprep.com/stable/profile'
     dfs = []
@@ -26,7 +81,6 @@ def fetch_fmp_comp_info(symbol_list, api_key):
         
         dfs.append(pd.DataFrame(data))
         time.sleep(0.171)
-        
         if (i + 1) % 100 == 0:
             print(f"Progress: {i + 1} / {len(symbol_list)} fetched...")
     
