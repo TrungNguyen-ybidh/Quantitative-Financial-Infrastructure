@@ -4,8 +4,10 @@ import time
 from dotenv import load_dotenv
 import os
 import sys
-sys.path.append(os.path.abspath('..'))
-from endpoint_config import fmp_endpoints
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from fetchers.endpoint_config import fmp_endpoints
+from config.utils import timer
 from pathlib import Path
 
 load_dotenv()
@@ -16,7 +18,8 @@ def fetch_data(url):
     df = pd.DataFrame(response.json())
     return df
 
-def fetch_fmp_data(symbols, api_key, time_sleep, endpoints_lst=None, period=None, limit=None):
+@timer
+def fetch_fmp_data(symbols, api_key, time_sleep=0.171, endpoints_lst=None, period=None, limit=None):
     ROOT = Path.cwd().parent
     base_url = 'https://financialmodelingprep.com/stable'
     endpoint_config = fmp_endpoints
@@ -39,7 +42,7 @@ def fetch_fmp_data(symbols, api_key, time_sleep, endpoints_lst=None, period=None
 
                 results = pd.concat(dfs, ignore_index=True)
                 time.sleep(time_sleep)
-                results.to_csv(ROOT / 'data' / f"{symbol}_{endpoint}.csv", index=False)  
+                results.to_csv(ROOT / 'data' / 'raw' / "{symbol}_{endpoint}.csv", index=False)  
                 print(f"Saved {symbol}_{endpoint}.csv")                                  
 
     else:
@@ -65,6 +68,7 @@ def fetch_fmp_data(symbols, api_key, time_sleep, endpoints_lst=None, period=None
                 df = pd.concat(dfs, ignore_index=True)
                 df.to_csv(ROOT / 'data'/ 'raw' /f"{symbol}_{end_point}.csv", index=False)  
                 print(f"Saved {symbol}_{end_point}.csv")                                    
+
 
 
 def fetch_fmp_comp_info(symbol_list, api_key):

@@ -1,40 +1,44 @@
 fmp_endpoints = [
+    # --- Company Profile --- 
+    {
+        "endpoint": "profile",
+        "params": {}
+
+    },
+
+    # --- Quote ---
+    {
+        "endpoint": "quote",
+        "params": {}
+    },
+
+     {
+        "endpoint": "quote-short",
+        "params": {}
+    },
+
     # --- Core Statements ---
     {
         "endpoint": "income-statement",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "quarter", "limit": 20}
     },
     {
         "endpoint": "balance-sheet-statement",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "quarter", "limit": 20}
     },
     {
         "endpoint": "cash-flow-statement",
-        "params": {"period": "annual", "limit": 10, "page": 0}
-    },
-
-    # --- TTM ---
-    {
-        "endpoint": "income-statement-ttm",
-        "params": {}
-    },
-    {
-        "endpoint": "balance-sheet-statement-ttm",
-        "params": {}
-    },
-    {
-        "endpoint": "cash-flow-statement-ttm",
-        "params": {}
+        "params": {"period": "quarter", "limit": 20}
     },
 
     # --- Metrics & Ratios ---
     {
         "endpoint": "key-metrics",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"limit": 30}
     },
     {
         "endpoint": "ratios",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": { "limit": 30}
     },
     {
         "endpoint": "key-metrics-ttm",
@@ -45,10 +49,15 @@ fmp_endpoints = [
         "params": {}
     },
 
+     {
+        "endpoint": "financial-scores",
+        "params": {}
+    },
+
     # --- Valuation ---
     {
         "endpoint": "enterprise-values",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "annual", "limit": 30}
     },
     {
         "endpoint": "discounted-cash-flow",
@@ -62,56 +71,49 @@ fmp_endpoints = [
     # --- Growth ---
     {
         "endpoint": "income-statement-growth",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "annual", "limit": 30}
     },
     {
         "endpoint": "balance-sheet-statement-growth",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "annual", "limit": 30}
     },
     {
         "endpoint": "cash-flow-statement-growth",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "annual", "limit": 30}
     },
     {
         "endpoint": "financial-growth",
-        "params": {"period": "annual", "limit": 10, "page": 0}
+        "params": {"period": "annual", "limit": 30}
     },
 
     # --- Segmentation ---
     {
         "endpoint": "revenue-product-segmentation",
-        "params": {"period": "annual", "limit": 10}
+        "params": {"period": "annual", "limit": 30}
     },
     {
         "endpoint": "revenue-geographic-segmentation",
-        "params": {"period": "annual", "limit": 10}
+        "params": {"period": "annual", "limit": 30}
     },
 
-    # --- As Reported ---
-    {
-        "endpoint": "income-statement-as-reported",
-        "params": {"period": "annual", "limit": 10, "page": 0}
-    },
-    {
-        "endpoint": "balance-sheet-statement-as-reported",
-        "params": {"period": "annual", "limit": 10, "page": 0}
-    },
-    {
-        "endpoint": "cash-flow-statement-as-reported",
-        "params": {"period": "annual", "limit": 10, "page": 0}
-    },
-    {
-        "endpoint": "financial-statement-full-as-reported",
-        "params": {"period": "annual", "limit": 10, "page": 0}
-    },
-
-    # --- Other ---
-    {
-        "endpoint": "latest-financial-statements",
-        "params": {"page": 0, "limit": 250}
-    },
+    # --- Dividends ---
     {
         "endpoint": "dividends",
-        "params": {"limit": 10}
+        "params": {"limit": 20}
+    },
+
+    # --- Analyst --- 
+     {
+        "endpoint": "analyst-estmates",
+        "params": {"period": "annual", "limit": 40}
+    },
+
+     {
+        "endpoint": "ratings-snapshot",
+        "params": {}
+    },
+     {
+        "endpoint": "ratings-historical",
+        "params": {"limit": 40}
     },
 ]
