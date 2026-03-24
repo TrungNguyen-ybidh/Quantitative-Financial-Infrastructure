@@ -260,3 +260,35 @@ def fetch_cash_flow(symbol_lst, api_key, period='quarter', limit=20, time_sleep=
     df["period_type"] = df["period_type"].map(lambda x: "annual" if x == "FY" else "quarterly")
 
     return df
+
+def fetch_financial_ratios(symbols_list, api_key, limit=5, time_sleep=0.171):
+    start = time.perf_counter()
+    dfs = []
+
+    for i, symbol in enumerate(symbols_list):
+        url = f'https://financialmodelingprep.com/stable/ratios?symbol={symbol}&apikey={api_key}&limit={limit}'
+        
+        response = requests.get(url)
+
+        if response.status_code != 200 or not response.text.strip():
+            print(f"Skipping {symbol} — status {response.status_code}")
+            continue
+
+        data = response.json()
+
+        if not isinstance(data, list) or len(data) == 0:
+            continue
+
+        dfs.append(pd.DataFrame(data))
+        time.sleep(time_sleep)
+
+        if (i + 1) % 100 == 0:
+            print(f"Progress: {i + 1} / {len(symbols_list)} fetched...")
+
+    if not dfs:
+        return pd.DataFrame()
+
+    df = pd.concat(dfs, ignore_index=True)
+    end = time.perf_counter()
+    print(f"Elapsed: {end - start:.6f}s")
+    return df
