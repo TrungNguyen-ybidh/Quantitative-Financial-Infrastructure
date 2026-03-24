@@ -1,0 +1,101 @@
+,date,companyName,oldSymbol,newSymbol
+0,2026-03-19,AMERICAN FUSION INC,S468,AMFN
+1,2026-03-17,"Merlin, Inc. Common Stock",BACQ,MRLN
+2,2026-03-16,Frontier Nuclear and Minerals Inc. Common Shares,LITM,FNUC
+3,2026-03-16,VivoPower PLC Ordinary Shares,VVPR,VIVO
+4,2026-03-12,Greenland Mines Ltd Warrant,KLTOW,GRMLW
+5,2026-03-12,GMEX ROBOTICS CORPORATION Class A Ordinary Shares,FTEL,GMEX
+6,2026-03-12,Mainz Biomed N.V. Ordinary Shares,MYNZ,QUCY
+7,2026-03-12,MDA Space Ltd.,MDAL,MDA
+8,2026-03-12,Greenland Mines Ltd. Common Stock,KLTO,GRML
+9,2026-03-11,"Filana Therapeutics, Inc. Common Stock",SAVA,FLNA
+10,2026-03-10,"Damora Therapeutics, Inc. Common Stock",GLTO,DMRA
+11,2026-03-10,OIO Group Warrants,ESGLW,OIOWW
+12,2026-03-10,OIO Group Ordinary Shares,ESGL,OIO
+13,2026-03-03,Meridian Holdings Inc. Common Stock,GMGI,MRDN
+14,2026-03-03,TRINSEO PLC,TSE,TSEO
+15,2026-03-02,Global X Rare Earth & Critical Materials ETF,DMAT,EART
+16,2026-03-02,"Forum Markets, Incorporated Common Stock",ETHZ,FRMM
+17,2026-03-02,"AH Realty Trust, Inc. Common Stock",AHH,AHRT
+18,2026-03-02,YieldMax JP Option Income Strategy ETF,JPMO,JPO
+19,2026-02-26,"Avidity Biosciences, Inc. Common Stock",RNA,RNAM
+20,2026-02-26,Nexentis Technologies Inc. Common Stock,NITO,NXTS
+21,2026-02-25,REalloys Inc. Common Stock,BLBX,ALOY
+22,2026-02-24,Ryerson Holding Corporation Common Stock,RYI,RYZ
+23,2026-02-24,Covista Inc. Common Shares,ATGE,CVSA
+24,2026-02-23,Invesco Bloomberg Enhanced Fallen Angels ETF,PHB,IFLN
+25,2026-02-23,ABPRO HOLDINGS INC,ABP,ABPO
+26,2026-02-23,Invesco S&P 500 Concentrated QVM ETF,SPVU,QVMT
+27,2026-02-23,Invesco Short Duration High Yield ETF,HIYS,GTOH
+28,2026-02-23,Chiron Real Estate Inc. Common Stock,GMRE,XRN
+29,2026-02-23,Invesco India ETF,PIN,IMVP
+30,2026-02-23,Invesco High Yield Systematic Bond ETF,IHYF,GTOQ
+31,2026-02-23,Invesco Bloomberg Financial Data Providers ETF,KBWR,FDIQ
+32,2026-02-19,"The Glimpse Group, Inc. Common Stock",VRAR,GGRP
+33,2026-02-19,Aris Mining Corporation Common Shares,ARMN,ARIS
+34,2026-02-18,"Canton Strategic Holdings, Inc. Common Stock",THAR,CNTN
+35,2026-02-13,VanEck Copper and Green Metals ETF,GMET,EMET
+36,2026-02-12,AIOS Tech Inc. Class A Common Shares,NISN,AIOS
+37,2026-02-11,"Ridgepost Capital, Inc. Class A Common Stock",PX,RPC
+38,2026-02-09,T3 Defense Inc. Common Stock,NUKK,DFNS
+39,2026-02-09,"First Citizens BancShares, Inc. Depositary Shares, each representing a 1/40th interest in a share of 6.625% Non-Cumulative Perpetual Preferred Stock, Series E",FCZB,FCNC
+40,2026-02-09,T3 Defense Inc. Warrants,NUKKW,DFNSW
+41,2026-02-05,Dauch Corporation Common Stock,AXL,DCH
+42,2026-02-05,Goldman Sachs ActiveBeta World Equity ETF,GLOV,GSWO
+43,2026-02-02,"Bloomia Holdings, Inc. Common Stock",LDWY,TULP
+44,2026-02-02,"Medical Properties Trust, Inc. common stock",MPW,MPT
+45,2026-01-29,ZeroStack Corp. Common Stock,FLGC,ZSTK
+46,2026-01-28,CrossingBridge Ultra-Short Duration ETF,SPC,CUSD
+47,2026-01-27,Mayfair Gold Corp.,MFGC,MINE
+48,2026-01-26,"Reliance Global Group, Inc. Series A Warrants",RELIW,EZRAW
+49,2026-01-26,"Reliance Global Group, Inc. Common Stock",RELI,EZRA
+50,2026-01-23,"GPGI, Inc. Class A Common Stock",CMPO,GPGI
+51,2026-01-22,Olenox Industries Inc. Common Stock,SGBX,OLOX
+52,2026-01-21,Pulsenmore Ltd. Ordinary Shares,PLSS,PLSM
+53,2026-01-21,INSPIRE VETEINRY PTN A,IVP,IVPR
+54,2026-01-20,Perpetuals.com Ltd American Depositary Shares,ELWS,PDC
+55,2026-01-20,AI ERA CORP,ABQQ,AERA
+56,2026-01-16,J and Friends Holdings Limited American Depositary Shares,PT,JF
+57,2026-01-16,iTonic Holdings Ltd Class A Ordinary Shares,PTHL,ITOC
+58,2026-01-16,Callaway Golf Company Common Stock,MODG,CALY
+59,2026-01-15,"Definium Therapeutics, Inc. Common Shares",MNMD,DFTX
+60,2026-01-14,Marsh Common Stock,MMC,MRSH
+61,2026-01-14,"Vistance Networks, Inc. Common Stock",COMM,VISN
+62,2026-01-12,"LeonaBio, Inc. Common Stock",ATHA,LONA
+63,2026-01-12,NORTH AMERICA LITH & GOLD,S680,NALG
+64,2026-01-08,"Kyntra Bio, Inc. Common Stock",FGEN,KYNB
+65,2026-01-08,"Kustom Entertainment, Inc. Common Stock",DGLY,KUST
+66,2026-01-08,Decoy Therapeutics Inc. Common Stock,SLRX,DCOY
+67,2026-01-05,"Versant Media Group, Inc. Class A Common Stock ",VSNTV,VSNT
+68,2026-01-05,Cybin Inc. Common Stock,CYBN,HELP
+69,2026-01-02,"Accendra Health, Inc. Common Stock",OMI,ACH
+70,2026-01-02,F/m Opportunistic Income ETF,XFIX,ZHOG
+71,2026-01-02,Orion Digital Corp. Common Shares,MOGO,ORIO
+72,2025-12-30,"Abacus Global Management, Inc. Class A Common Stock",ABL,ABX
+73,2025-12-30,"Abacus Global Management, Inc. 9.875% Fixed Rate Senior Notes due 2028",ABLLL,ABXL
+74,2025-12-26,"OPENLANE, Inc. Common Stock",KAR,OPLN
+75,2025-12-24,BitVentures Limited Ordinary Shares,STEC,BVC
+76,2025-12-22,Rayliant Wilshire NxtGen Emerging Markets Equity ETF,RAYE,RWEM
+77,2025-12-22,Rayliant Wilshire NxtGen US Large Cap Equity ETF,RAYD,RWLC
+78,2025-12-22,"High Templar Tech Limited American depositary shares, each representing one Class A ordinary share",QD,HTT
+79,2025-12-19,RenX Enterprises Corp. Common Stock,SGD,RENX
+80,2025-12-19,Xtrackers S&P 100 Ex Top 20 ETF,SNPV,XOEX
+81,2025-12-16,"Datacentrex, Inc. Common Stock",TZUP,DTCX
+82,2025-12-15,Gabelli Global Technology Leaders ETF,GAST,GGTL
+83,2025-12-12,"ENvue Medical, Inc. Common Stock",NAOV,FEED
+84,2025-12-12,Axe Compute Inc. Common Stock,POAI,AGPU
+85,2025-12-10,"TaoWeave, Inc. Common Stock",OBLG,TWAV
+86,2025-12-10,AMC Robotics Corporation Common Stock,ATMV,AMCI
+87,2025-12-10,Digital Currency X Technology Inc. Class A Ordinary Shares,CJET,DCX
+88,2025-12-10,TJGC Group Limited Ordinary Shares,MCTR,TJGC
+89,2025-12-08,BRP Inc. Common Subordinate Voting Shares,DOOO,DOO
+90,2025-12-08,Abundia Global Impact Group Inc. Common stock,HUSA,AGIG
+91,2025-12-04,"General Enterprise Ventures, Inc.",GEVI,CITR
+92,2025-12-02,"Gold.com, Inc. Common Stock",AMRK,GOLD
+93,2025-12-01,GridAI Technologies Corp. Common Stock,ENTO,GRDX
+94,2025-11-28,Check-Cap Ltd. Ordinary Share,CHEK,MBAI
+95,2025-11-25,Inflection Point Acquisition Corp. V Class A Ordinary Shares,MAYA,IPEX
+96,2025-11-25,Inflection Point Acquisition Corp. V Units,MAYAU,IPEXU
+97,2025-11-25,Inflection Point Acquisition Corp. V Rights,MAYAR,IPEXR
+98,2025-11-25,Republic Airways Holdings Inc. Common Stock,MESA,RJET
+99,2025-11-21,Titan Mining Corporation,TIMC,TII

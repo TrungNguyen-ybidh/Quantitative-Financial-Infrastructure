@@ -1,0 +1,74 @@
+,exchange,name,countryName,countryCode,symbolSuffix,delay
+0,ICE,NASDAQ Iceland,Iceland ,IS,.IC,Real-time
+1,KUW,Kuwait Stock Exchange,Kuwait,KW,.KW,
+2,RIS,NASDAQ Riga,Latvia,LV,.RG,Real-time
+3,TWO,Taipei Exchange,Taiwan,TW,.TWO,20 min
+4,AMS,Euronext Amsterdam,Netherlands,NL,.AS,Real-time
+5,KLS,Malaysian Stock Exchange,Malaysia,MY,.KL,15 min
+6,IOB,International Order Book,United Kingdom,UK,.IL,15 min
+7,MCX,Moscow Stock Exchange,Russia,RU,.ME,15 min
+8,CNQ,Canadian Securities Exchange,Canada,CA,.CN,Real-time
+9,IST,Istanbul Stock Exchange,Turkey,TR,.IS,15 min
+10,SAO,B3 S.A.,Brazil,BR,.SA,15 min
+11,BSE,Bombay Stock Exchange,India,IN,.BO,15 min
+12,BRU,Euronext Brussels,Belgium,BE,.BR,15 min
+13,JNB,Johannesburg Stock Exchange,South Africa,ZA,.JO,15 min
+14,STO,Stockholm Stock Exchange,Sweden,SE,.ST,Real-time
+15,XETRA,Deutsche Börse,Germany,DE,.DE,15 min
+16,DUB,Euronext Dublin,Ireland,IE,.IR,15 min
+17,BVC,Colombia Stock Exchange,Colombia,CO,.CL,15 min
+18,HAM,Hamburg Stock Exchange,Germany,DE,.HM,15 min
+19,SGO,Santiago Stock Exchange,Chile,CL,.SN,20 min
+20,BUD,Budapest Stock Exchange,Hungary,HU,.BD,15 min
+21,AQS,Aquis Stock Exchange,United Kingdom,UK,.AQ,Real-time
+22,MIL,Italian Stock Exchange,Italy,IT,.MI,15 min
+23,CPH,NASDAQ Copenhagen,Denmark,DK,.CO,Real-time
+24,TAL,NASDAQ Tallinn,Estonia,EE,.TL,15 min
+25,JPX,Tokyo Stock Exchange,Japan,JP,.T,20 min
+26,HOSE,Ho Chi Minh Stock Exchange,Vietnam,VN,.VN,15 min
+27,STU,Stuttgart Stock Exchange,Germany,DE,.SG,15 min
+28,JKT,Indonesia Stock Exchange,Indonesia,ID,.JK,10 min
+29,FSX,Frankfurt Stock Exchange,Germany,DE,.F,
+30,BER,Berlin Stock Exchange,Germany,DE,.BE,15 min
+31,NEO,CBOE CA,Canada,CA,.NE,Real-time
+32,PAR,Euronext Paris,France,FR,.PA,15 min
+33,KSC,Korea Exchange,South Korea,KR,.KS,20 min
+34,NYSE,New York Stock Exchange,United States of America,US,N/A,Real-time
+35,OSL,Oslo Stock Exchange,Norway,NO,.OL,15 min
+36,NASDAQ,NASDAQ,United States of America,US,N/A,Real-time
+37,BUE,Buenos Aires Stock Exchange,Argentina,AR,.BA,20 min
+38,MUN,Munich Stock Exchange,Germany,DE,.MU,15 min
+39,ATH,Athens Stock Exchange,Greece,GR,.AT,15 min
+40,BME,Madrid Stock Exchange,Spain,ES,.MC,15 min
+41,TLV,Tel Aviv Stock Exchange,Israel,IL,.TA,15 min
+42,HEL,NASDAQ Helsinki,Finland,FI,.HE,Real-time
+43,EURONEXT,Euronext,,,,15 min
+44,HKSE,Hong Kong Stock Exchange,Hong Kong,HK,.HK,15 min
+45,DXE,CBOE Europe,,,.XD,Real-time
+46,DUS,Dusseldorf Stock Exchange,Germany,DE,.DU,15 min
+47,OTC,Other OTC,United States of America,US,N/A,Real-time
+48,NZE,New Zealand Exchange,New Zealand,NZ,.NZ,15 min
+49,SHZ,Shenzhen Stock Exchange,China,CN,.SZ,15 min
+50,SIX,Swiss Exchange,Switzerland,CH,.SW,15 min
+51,VIE,Vienna Stock Exchange,Austria,AT,.VI,15 min
+52,ASX,Australian Securities Exchange,Australia,AU,.AX,20 min
+53,KOE,KOSDAQ,South Korea,KR,.KQ,20 min
+54,SET,Stock Exchange of Thailand,Thailand,TH,.BK,15 min
+55,TSXV,Toronto Stock Exchange Ventures,Canada,CA,.V,Real-time
+56,EGX,Egyptian Exchange,Egypt,EG,.CA,15 min
+57,DOH,Qatar Stock Exchange,Qatar,QA,.QA,15 min
+58,TSX,Toronto Stock Exchange,Canada,CA,.TO,15 min
+59,LIS,Euronext Lisbon,Portugal,PT,.LS,15 min
+60,AMEX,New York Stock Exchange Arca,United States of America,US,N/A,Real-time
+61,PRA,Prague Stock Exchange,Czech Republic,CZ,.PR,15 min
+62,SES,Stock Exchange of Singapore,Singapore,SG,.SI,10 min
+63,NSE,National Stock Exchange of India,India,IN,.NS,15 min
+64,TAI,Taiwan Stock Exchange,Taiwan,TW,.TW,20 min
+65,PNK,OTC Markets US Pink Slips,United States of America,US,N/A,Real-time
+66,SHH,Shanghai Stock Exchange,China,CN,.SS,15 min
+67,SAU,Saudi Exchange,Saudi Arabia,SA,.SR,15 min
+68,CBOE,Chicago Board Options Exchange,United States of America,US,N/A,Real-time
+69,DFM,Dubai Financial Market,United Arab Emirates,AE,.AE,15 min
+70,LSE,London Stock Exchange,United Kingdom,UK,.L,15 min
+71,MEX,Mexican Stock Exchange,Mexico,MX,.MX,20 min
+72,WSE,Warsaw Stock Exchange,Poland,PL,.WA,Real-time
