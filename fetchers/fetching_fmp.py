@@ -42,7 +42,11 @@ def fetch_fmp_data(symbols, api_key, time_sleep=0.171, endpoints_lst=None, perio
 
                 results = pd.concat(dfs, ignore_index=True)
                 time.sleep(time_sleep)
-                results.to_csv(ROOT / 'data' / 'raw' / "{symbol}_{endpoint}.csv", index=False)  
+                output_path = ROOT / 'data' / 'raw' /f"{endpoint}.csv"
+                if output_path.exists():
+                    results.to_csv(output_path, mode='a', header=False, index=False)  
+                else:
+                    results.to_csv(output_path, mode='w', header=True, index=False)   
                 print(f"Saved {symbol}_{endpoint}.csv")                                  
 
     else:
@@ -65,8 +69,13 @@ def fetch_fmp_data(symbols, api_key, time_sleep=0.171, endpoints_lst=None, perio
                 if (i + 1) % 100 == 0:
                     print(f"Progress: {i + 1} / {len(symbols)} fetched...")
 
-                df = pd.concat(dfs, ignore_index=True)
-                df.to_csv(ROOT / 'data'/ 'raw' /f"{symbol}_{end_point}.csv", index=False)  
+                results = pd.concat(dfs, ignore_index=True)
+                output_path = ROOT / 'data' / 'raw' /  f"{endpoint}.csv"
+
+                if output_path.exists():
+                    results.to_csv(output_path, mode='a', header=False, index=False)  
+                else:
+                    results.to_csv(output_path, mode='w', header=True, index=False)    
                 print(f"Saved {symbol}_{end_point}.csv")                                    
 
 

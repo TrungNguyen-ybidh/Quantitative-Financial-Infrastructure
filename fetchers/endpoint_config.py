@@ -104,8 +104,8 @@ fmp_endpoints = [
 
     # --- Analyst --- 
      {
-        "endpoint": "analyst-estmates",
-        "params": {"period": "annual", "limit": 40}
+        "endpoint": "analyst-estimates",
+        "params": {"period": "annual", "limit": 10, "page":0}
     },
 
      {
