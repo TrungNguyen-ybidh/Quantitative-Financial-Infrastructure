@@ -20,15 +20,15 @@ fmp_endpoints = [
     # --- Core Statements ---
     {
         "endpoint": "income-statement",
-        "params": {"period": "quarter", "limit": 20}
+        "params": {"period": "quarter", "limit": 30}
     },
     {
         "endpoint": "balance-sheet-statement",
-        "params": {"period": "quarter", "limit": 20}
+        "params": {"period": "quarter", "limit": 30}
     },
     {
         "endpoint": "cash-flow-statement",
-        "params": {"period": "quarter", "limit": 20}
+        "params": {"period": "quarter", "limit": 30}
     },
 
     # --- Metrics & Ratios ---
@@ -114,6 +114,6 @@ fmp_endpoints = [
     },
      {
         "endpoint": "ratings-historical",
-        "params": {"limit": 40}
+        "params": {"limit": 1}
     },
 ]
