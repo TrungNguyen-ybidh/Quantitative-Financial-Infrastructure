@@ -2,4 +2,3 @@ cleaners
 config
 data
 fetchers
-pipline

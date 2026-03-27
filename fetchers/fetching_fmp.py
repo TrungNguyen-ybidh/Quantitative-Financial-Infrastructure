@@ -24,59 +24,81 @@ def fetch_fmp_data(symbols, api_key, time_sleep=0.171, endpoints_lst=None, perio
     base_url = 'https://financialmodelingprep.com/stable'
     endpoint_config = fmp_endpoints
 
+    def safe_dataframe(response, symbol, endpoint):
+        """Validate API response and return a DataFrame or None."""
+        if isinstance(response, dict):
+            if "Error Message" in response:
+                print(f"API error for {symbol}/{endpoint}: {response['Error Message']}")
+                return None
+            return pd.DataFrame([response])
+        elif isinstance(response, list):
+            if response:
+                return pd.DataFrame(response)
+            return None
+        else:
+            print(f"Unexpected response for {symbol}/{endpoint}: {type(response)}")
+            return None
+
+    def save_csv(df, endpoint):
+        output_path = ROOT / 'data' / 'raw' / f"{endpoint}.csv"
+        if output_path.exists():
+            df.to_csv(output_path, mode='a', header=False, index=False)
+        else:
+            df.to_csv(output_path, mode='w', header=True, index=False)
+
     if endpoints_lst is None:
-        for i, symbol in enumerate(symbols):
-            for config in endpoint_config:
-                dfs = []
-                endpoint = config["endpoint"]
+        for config in endpoint_config:
+            endpoint = config["endpoint"]
+            raw_responses = []
+            for i, symbol in enumerate(symbols):
                 params = config["params"].copy()
                 params["apikey"] = api_key
-                params['symbol'] = symbol  
+                params["symbol"] = symbol
 
                 url = f"{base_url}/{endpoint}"
-                response = requests.get(url, params=params).json()
-                dfs.append(pd.DataFrame(response))
+                try:
+                    resp = requests.get(url, params=params)
+                    resp.raise_for_status()
+                    response = resp.json()
+                except Exception as e:
+                    print(f"Request failed for {symbol}/{endpoint}: {e}")
+                    time.sleep(time_sleep)
+                    continue
+
+                if isinstance(response, list) and response:
+                    raw_responses.extend(response)
+                elif isinstance(response, dict) and "Error Message" not in response:
+                    raw_responses.append(response)
 
                 if (i + 1) % 100 == 0:
-                    print(f"Progress: {i + 1} / {len(symbols)} fetched...")
-
-                results = pd.concat(dfs, ignore_index=True)
+                    print(f"[{endpoint}] Progress: {i + 1} / {len(symbols)} fetched...")
                 time.sleep(time_sleep)
-                output_path = ROOT / 'data' / 'raw' /f"{endpoint}.csv"
-                if output_path.exists():
-                    results.to_csv(output_path, mode='a', header=False, index=False)  
-                else:
-                    results.to_csv(output_path, mode='w', header=True, index=False)   
-                print(f"Saved {symbol}_{endpoint}.csv")                                  
+
+            if raw_responses:
+                save_csv(pd.DataFrame(raw_responses), endpoint)
 
     else:
-        for i, symbol in enumerate(symbols):
+        for end_point in endpoints_lst:
             dfs = []
-            for end_point in endpoints_lst:
-                params = {
-                    'apikey': api_key,
-                    'symbol': symbol
-                }
+            for i, symbol in enumerate(symbols):
+                params = {"apikey": api_key, "symbol": symbol}
                 if period is not None:
                     params["period"] = period
                 if limit is not None:
                     params["limit"] = limit
-                url = f"{base_url}/{end_point}" 
+
+                url = f"{base_url}/{end_point}"
                 response = requests.get(url, params=params).json()
-                dfs.append(pd.DataFrame(response))
+                df = safe_dataframe(response, symbol, end_point)
+                if df is not None:
+                    dfs.append(df)
 
-                time.sleep(time_sleep)
                 if (i + 1) % 100 == 0:
-                    print(f"Progress: {i + 1} / {len(symbols)} fetched...")
+                    print(f"[{end_point}] Progress: {i + 1} / {len(symbols)} fetched...")
+                time.sleep(time_sleep)
 
-                results = pd.concat(dfs, ignore_index=True)
-                output_path = ROOT / 'data' / 'raw' /  f"{endpoint}.csv"
-
-                if output_path.exists():
-                    results.to_csv(output_path, mode='a', header=False, index=False)  
-                else:
-                    results.to_csv(output_path, mode='w', header=True, index=False)    
-                print(f"Saved {symbol}_{end_point}.csv")                                    
+            if dfs:
+                save_csv(pd.concat(dfs, ignore_index=True), end_point)                
 
 
 
