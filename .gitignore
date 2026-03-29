@@ -1,6 +1,9 @@
 # data
 data/raw/
 
+#config
+config/config.py
+
 # environment
 .env
 
