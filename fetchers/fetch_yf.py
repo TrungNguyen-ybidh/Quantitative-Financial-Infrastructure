@@ -8,9 +8,9 @@ from config.utils import timer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @timer
-def fetch_yf(ticker_lst, interval="1d", period=None, start_date=None, end_date=None, chunk_size=50):
-    ticker_lst = [t for t in ticker_lst if isinstance(t, str)]
-    chunks = [ticker_lst[i:i+chunk_size] for i in range(0, len(ticker_lst), chunk_size)]
+def fetch_yf(symbols, interval="1d", period=None, start_date=None, end_date=None, chunk_size=50):
+    symbols = [t for t in symbols if isinstance(t, str)]
+    chunks = [symbols[i:i+chunk_size] for i in range(0, len(symbols), chunk_size)]
     
     dfs = []
     for i, chunk in enumerate(chunks):
