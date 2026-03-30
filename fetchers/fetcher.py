@@ -5,9 +5,10 @@ from pathlib import Path
 from config.endpoint_config import fmp_endpoints
 import requests
 from fredapi import Fred
+from config import ROOT
 
 class Fetcher:
-    def __init__(self, symbols, api_key = None, rootpath = None, period=None, url=None):
+    def __init__(self, symbols=None, api_key = None, rootpath = None, period=None, url=None):
         self.symbols = symbols
         self.api_key = api_key
         self.root = Path.cwd().parent
@@ -34,8 +35,13 @@ class Fetcher:
             print(f"Unexpected response for {symbol}/{endpoint}: {type(response)}")
             return None
 
-    def save_csv(self, df, endpoint):
-        output_path = self.root / 'data' / 'raw' / f"{endpoint}.csv"
+    def save_csv(self, df, file_path=ROOT, endpoint=None):
+        file_path = Path(file_path)  # ← add this line
+        if endpoint is not None:
+            output_path = file_path / f"{endpoint}.csv"
+        else:
+            output_path = file_path
+
         if output_path.exists():
             df.to_csv(output_path, mode='a', header=False, index=False)
         else:
@@ -72,7 +78,7 @@ class Fetcher:
         df.rename(columns={'index': 'date'}, inplace = True)
         return df
     
-    def fetch_fmp_data(self, time_sleep=0.171, endpoints_lst=None, limit=None):
+    def fetch_fmp_data(self, file_path=ROOT, time_sleep=0.171, endpoints_lst=None, limit=None):
         base_url = 'https://financialmodelingprep.com/stable'
         endpoint_config = fmp_endpoints
 
@@ -105,7 +111,7 @@ class Fetcher:
                     time.sleep(time_sleep)
 
                 if raw_responses:
-                    self.save_csv(pd.DataFrame(raw_responses), endpoint)
+                    self.save_csv(pd.DataFrame(raw_responses), endpoint=endpoint, file_path=file_path)
 
         else:
             for end_point in endpoints_lst:
@@ -128,4 +134,4 @@ class Fetcher:
                     time.sleep(time_sleep)
 
                 if dfs:
-                    self.save_csv(pd.concat(dfs, ignore_index=True), end_point)                
+                    self.save_csv(pd.DataFrame(raw_responses), endpoint=endpoint, file_path=file_path)               

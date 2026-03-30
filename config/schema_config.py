@@ -6,6 +6,24 @@ schema_map = {
             "sector", "industry", "country", "cik", "isin", "cusip",
             "exchange", "ceo", "fullTimeEmployees", "ipoDate", "description"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "companyName": "company_name",
+            "price": "price",
+            "marketCap": "market_cap",
+            "beta": "beta",
+            "sector": "sector",
+            "industry": "industry",
+            "country": "country",
+            "cik": "cik",
+            "isin": "isin",
+            "cusip": "cusip",
+            "exchange": "exchange",
+            "ceo": "ceo",
+            "fullTimeEmployees": "full_time_employees",
+            "ipoDate": "ipo_date",
+            "description": "description"
+        },
         "drop": [
             "lastDividend", "range", "change", "changePercentage",
             "volume", "averageVolume", "currency", "exchangeFullName",
@@ -21,6 +39,17 @@ schema_map = {
             "symbol", "name", "price", "marketCap",
             "yearHigh", "yearLow", "priceAvg50", "priceAvg200", "volume"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "name": "name",
+            "price": "price",
+            "marketCap": "market_cap",
+            "yearHigh": "year_high",
+            "yearLow": "year_low",
+            "priceAvg50": "price_avg_50",
+            "priceAvg200": "price_avg_200",
+            "volume": "volume"
+        },
         "drop": [
             "changePercentage", "change", "dayLow", "dayHigh",
             "exchange", "open", "previousClose", "timestamp"
@@ -34,6 +63,18 @@ schema_map = {
             "workingCapital", "totalAssets", "retainedEarnings",
             "ebit", "marketCap", "totalLiabilities", "revenue"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "altmanZScore": "altman_z_score",
+            "piotroskiScore": "piotroski_score",
+            "workingCapital": "working_capital",
+            "totalAssets": "total_assets",
+            "retainedEarnings": "retained_earnings",
+            "ebit": "ebit",
+            "marketCap": "market_cap",
+            "totalLiabilities": "total_liabilities",
+            "revenue": "revenue"
+        },
         "drop": [
             "reportedCurrency"
         ]
@@ -44,6 +85,12 @@ schema_map = {
         "keep": [
             "symbol", "date", "dcf", "Stock Price"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "dcf": "dcf",
+            "Stock Price": "stock_price"
+        },
         "drop": []
     },
 
@@ -52,6 +99,12 @@ schema_map = {
         "keep": [
             "symbol", "date", "dcf", "Stock Price"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "dcf": "levered_dcf",
+            "Stock Price": "stock_price"
+        },
         "drop": []
     },
 
@@ -73,6 +126,31 @@ schema_map = {
             "eps", "epsDiluted",
             "weightedAverageShsOut", "weightedAverageShsOutDil"
         ],
+        "rename": {
+            "date": "date",
+            "symbol": "ticker",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "revenue": "revenue",
+            "costOfRevenue": "cost_of_revenue",
+            "grossProfit": "gross_profit",
+            "researchAndDevelopmentExpenses": "rd_expenses",
+            "sellingGeneralAndAdministrativeExpenses": "sga_expenses",
+            "operatingExpenses": "operating_expenses",
+            "operatingIncome": "operating_income",
+            "interestIncome": "interest_income",
+            "interestExpense": "interest_expense",
+            "depreciationAndAmortization": "depreciation_amortization",
+            "ebitda": "ebitda",
+            "ebit": "ebit",
+            "incomeBeforeTax": "income_before_tax",
+            "incomeTaxExpense": "income_tax_expense",
+            "netIncome": "net_income",
+            "eps": "eps",
+            "epsDiluted": "eps_diluted",
+            "weightedAverageShsOut": "shares_outstanding",
+            "weightedAverageShsOutDil": "shares_outstanding_diluted"
+        },
         "drop": [
             "reportedCurrency", "cik", "filingDate", "acceptedDate",
             "generalAndAdministrativeExpenses",
@@ -108,6 +186,39 @@ schema_map = {
             "totalStockholdersEquity", "totalEquity",
             "totalDebt", "netDebt"
         ],
+        "rename": {
+            "date": "date",
+            "symbol": "ticker",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "cashAndCashEquivalents": "cash",
+            "shortTermInvestments": "short_term_investments",
+            "cashAndShortTermInvestments": "cash_and_short_term_investments",
+            "netReceivables": "net_receivables",
+            "inventory": "inventory",
+            "totalCurrentAssets": "total_current_assets",
+            "propertyPlantEquipmentNet": "ppe_net",
+            "goodwill": "goodwill",
+            "intangibleAssets": "intangible_assets",
+            "longTermInvestments": "long_term_investments",
+            "taxAssets": "tax_assets",
+            "totalNonCurrentAssets": "total_non_current_assets",
+            "totalAssets": "total_assets",
+            "accountPayables": "accounts_payable",
+            "accruedExpenses": "accrued_expenses",
+            "shortTermDebt": "short_term_debt",
+            "deferredRevenue": "deferred_revenue",
+            "totalCurrentLiabilities": "total_current_liabilities",
+            "longTermDebt": "long_term_debt",
+            "totalNonCurrentLiabilities": "total_non_current_liabilities",
+            "totalLiabilities": "total_liabilities",
+            "retainedEarnings": "retained_earnings",
+            "additionalPaidInCapital": "additional_paid_in_capital",
+            "totalStockholdersEquity": "stockholders_equity",
+            "totalEquity": "total_equity",
+            "totalDebt": "total_debt",
+            "netDebt": "net_debt"
+        },
         "drop": [
             "reportedCurrency", "cik", "filingDate", "acceptedDate",
             "accountsReceivables", "otherReceivables",
@@ -149,6 +260,32 @@ schema_map = {
             "operatingCashFlow", "capitalExpenditure", "freeCashFlow",
             "incomeTaxesPaid", "interestPaid"
         ],
+        "rename": {
+            "date": "date",
+            "symbol": "ticker",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "netIncome": "net_income",
+            "depreciationAndAmortization": "depreciation_amortization",
+            "stockBasedCompensation": "stock_based_compensation",
+            "deferredIncomeTax": "deferred_income_tax",
+            "changeInWorkingCapital": "change_in_working_capital",
+            "netCashProvidedByOperatingActivities": "cash_from_operations",
+            "investmentsInPropertyPlantAndEquipment": "ppe_investments",
+            "acquisitionsNet": "acquisitions_net",
+            "purchasesOfInvestments": "purchases_of_investments",
+            "salesMaturitiesOfInvestments": "sales_of_investments",
+            "netCashProvidedByInvestingActivities": "cash_from_investing",
+            "netDebtIssuance": "net_debt_issuance",
+            "commonStockRepurchased": "stock_repurchased",
+            "netDividendsPaid": "dividends_paid",
+            "netCashProvidedByFinancingActivities": "cash_from_financing",
+            "operatingCashFlow": "operating_cash_flow",
+            "capitalExpenditure": "capex",
+            "freeCashFlow": "free_cash_flow",
+            "incomeTaxesPaid": "income_taxes_paid",
+            "interestPaid": "interest_paid"
+        },
         "drop": [
             "reportedCurrency", "cik", "filingDate", "acceptedDate",
             "accountsReceivables", "inventory", "accountsPayables",
@@ -161,6 +298,140 @@ schema_map = {
             "otherFinancingActivities",
             "effectOfForexChangesOnCash", "netChangeInCash",
             "cashAtEndOfPeriod", "cashAtBeginningOfPeriod"
+        ]
+    },
+
+    # ======================== GROWTH STATEMENTS ========================
+    # PK: (symbol, date, period)
+
+    "balance-sheet-statement-growth.csv": {
+        "primary_key": ["symbol", "date", "period"],
+        "keep": [
+            "symbol", "date", "fiscalYear", "period",
+            "growthTotalAssets", "growthTotalLiabilities",
+            "growthTotalEquity", "growthTotalDebt", "growthNetDebt",
+            "growthTotalCurrentAssets", "growthTotalCurrentLiabilities"
+        ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "growthTotalAssets": "growth_total_assets",
+            "growthTotalLiabilities": "growth_total_liabilities",
+            "growthTotalEquity": "growth_total_equity",
+            "growthTotalDebt": "growth_total_debt",
+            "growthNetDebt": "growth_net_debt",
+            "growthTotalCurrentAssets": "growth_total_current_assets",
+            "growthTotalCurrentLiabilities": "growth_total_current_liabilities"
+        },
+        "drop": [
+            "reportedCurrency",
+            "growthCashAndCashEquivalents", "growthShortTermInvestments",
+            "growthCashAndShortTermInvestments", "growthNetReceivables",
+            "growthInventory", "growthOtherCurrentAssets",
+            "growthPropertyPlantEquipmentNet", "growthGoodwill",
+            "growthIntangibleAssets", "growthGoodwillAndIntangibleAssets",
+            "growthLongTermInvestments", "growthTaxAssets",
+            "growthOtherNonCurrentAssets", "growthTotalNonCurrentAssets",
+            "growthOtherAssets", "growthAccountPayables",
+            "growthShortTermDebt", "growthTaxPayables",
+            "growthDeferredRevenue", "growthOtherCurrentLiabilities",
+            "growthLongTermDebt", "growthDeferredRevenueNonCurrent",
+            "growthDeferredTaxLiabilitiesNonCurrent",
+            "growthOtherNonCurrentLiabilities", "growthTotalNonCurrentLiabilities",
+            "growthOtherLiabilities", "growthPreferredStock",
+            "growthCommonStock", "growthRetainedEarnings",
+            "growthAccumulatedOtherComprehensiveIncomeLoss",
+            "growthOthertotalStockholdersEquity", "growthTotalStockholdersEquity",
+            "growthMinorityInterest", "growthTotalLiabilitiesAndStockholdersEquity",
+            "growthTotalInvestments", "growthAccountsReceivables",
+            "growthOtherReceivables", "growthPrepaids",
+            "growthTotalPayables", "growthOtherPayables",
+            "growthAccruedExpenses", "growthCapitalLeaseObligationsCurrent",
+            "growthAdditionalPaidInCapital", "growthTreasuryStock"
+        ]
+    },
+
+    "cash-flow-statement-growth.csv": {
+        "primary_key": ["symbol", "date", "period"],
+        "keep": [
+            "symbol", "date", "fiscalYear", "period",
+            "growthOperatingCashFlow", "growthFreeCashFlow",
+            "growthCapitalExpenditure", "growthNetChangeInCash",
+            "growthDividendsPaid"
+        ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "growthOperatingCashFlow": "growth_operating_cash_flow",
+            "growthFreeCashFlow": "growth_free_cash_flow",
+            "growthCapitalExpenditure": "growth_capex",
+            "growthNetChangeInCash": "growth_net_change_in_cash",
+            "growthDividendsPaid": "growth_dividends_paid"
+        },
+        "drop": [
+            "reportedCurrency",
+            "growthNetIncome", "growthDepreciationAndAmortization",
+            "growthDeferredIncomeTax", "growthStockBasedCompensation",
+            "growthChangeInWorkingCapital", "growthAccountsReceivables",
+            "growthInventory", "growthAccountsPayables",
+            "growthOtherWorkingCapital", "growthOtherNonCashItems",
+            "growthNetCashProvidedByOperatingActivites",
+            "growthInvestmentsInPropertyPlantAndEquipment",
+            "growthAcquisitionsNet", "growthPurchasesOfInvestments",
+            "growthSalesMaturitiesOfInvestments", "growthOtherInvestingActivites",
+            "growthNetCashUsedForInvestingActivites", "growthDebtRepayment",
+            "growthCommonStockIssued", "growthCommonStockRepurchased",
+            "growthOtherFinancingActivites",
+            "growthNetCashUsedProvidedByFinancingActivities",
+            "growthEffectOfForexChangesOnCash",
+            "growthCashAtEndOfPeriod", "growthCashAtBeginningOfPeriod",
+            "growthNetDebtIssuance", "growthLongTermNetDebtIssuance",
+            "growthShortTermNetDebtIssuance", "growthNetStockIssuance",
+            "growthPreferredDividendsPaid", "growthIncomeTaxesPaid",
+            "growthInterestPaid"
+        ]
+    },
+
+    "income-statement-growth.csv": {
+        "primary_key": ["symbol", "date", "period"],
+        "keep": [
+            "symbol", "date", "fiscalYear", "period",
+            "growthRevenue", "growthGrossProfit",
+            "growthOperatingIncome", "growthNetIncome",
+            "growthEBITDA", "growthEPS", "growthEPSDiluted"
+        ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "growthRevenue": "growth_revenue",
+            "growthGrossProfit": "growth_gross_profit",
+            "growthOperatingIncome": "growth_operating_income",
+            "growthNetIncome": "growth_net_income",
+            "growthEBITDA": "growth_ebitda",
+            "growthEPS": "growth_eps",
+            "growthEPSDiluted": "growth_eps_diluted"
+        },
+        "drop": [
+            "reportedCurrency",
+            "growthCostOfRevenue", "growthGrossProfitRatio",
+            "growthResearchAndDevelopmentExpenses",
+            "growthGeneralAndAdministrativeExpenses",
+            "growthSellingAndMarketingExpenses", "growthOtherExpenses",
+            "growthOperatingExpenses", "growthCostAndExpenses",
+            "growthInterestIncome", "growthInterestExpense",
+            "growthDepreciationAndAmortization", "growthEBIT",
+            "growthIncomeBeforeTax", "growthIncomeTaxExpense",
+            "growthWeightedAverageShsOut", "growthWeightedAverageShsOutDil",
+            "growthNonOperatingIncomeExcludingInterest",
+            "growthNetInterestIncome", "growthTotalOtherIncomeExpensesNet",
+            "growthNetIncomeFromContinuingOperations",
+            "growthOtherAdjustmentsToNetIncome", "growthNetIncomeDeductions"
         ]
     },
 
@@ -187,6 +458,40 @@ schema_map = {
             "freeCashFlowToEquity", "freeCashFlowToFirm",
             "tangibleAssetValue", "netCurrentAssetValue"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "marketCap": "market_cap",
+            "enterpriseValue": "enterprise_value",
+            "evToSales": "ev_to_sales",
+            "evToEBITDA": "ev_to_ebitda",
+            "evToFreeCashFlow": "ev_to_fcf",
+            "netDebtToEBITDA": "net_debt_to_ebitda",
+            "currentRatio": "current_ratio",
+            "incomeQuality": "income_quality",
+            "grahamNumber": "graham_number",
+            "workingCapital": "working_capital",
+            "investedCapital": "invested_capital",
+            "returnOnAssets": "roa",
+            "returnOnEquity": "roe",
+            "returnOnInvestedCapital": "roic",
+            "returnOnCapitalEmployed": "roce",
+            "earningsYield": "earnings_yield",
+            "freeCashFlowYield": "fcf_yield",
+            "researchAndDevelopementToRevenue": "rd_to_revenue",
+            "stockBasedCompensationToRevenue": "sbc_to_revenue",
+            "capexToRevenue": "capex_to_revenue",
+            "daysOfSalesOutstanding": "days_sales_outstanding",
+            "daysOfPayablesOutstanding": "days_payables_outstanding",
+            "daysOfInventoryOutstanding": "days_inventory_outstanding",
+            "cashConversionCycle": "cash_conversion_cycle",
+            "freeCashFlowToEquity": "fcf_to_equity",
+            "freeCashFlowToFirm": "fcf_to_firm",
+            "tangibleAssetValue": "tangible_asset_value",
+            "netCurrentAssetValue": "net_current_asset_value"
+        },
         "drop": [
             "reportedCurrency",
             "evToOperatingCashFlow",
@@ -205,44 +510,72 @@ schema_map = {
         "primary_key": ["symbol", "date", "period"],
         "keep": [
             "symbol", "date", "fiscalYear", "period",
-            # --- Margins ---
             "grossProfitMargin", "ebitMargin", "ebitdaMargin",
             "operatingProfitMargin", "netProfitMargin",
-            # --- Turnover ---
             "receivablesTurnover", "payablesTurnover",
             "inventoryTurnover", "fixedAssetTurnover", "assetTurnover",
-            # --- Liquidity ---
             "currentRatio", "quickRatio",
-            # --- Leverage ---
             "debtToEquityRatio", "debtToAssetsRatio",
             "financialLeverageRatio", "interestCoverageRatio",
-            # --- Valuation ---
             "priceToEarningsRatio", "priceToBookRatio",
             "priceToSalesRatio", "priceToFreeCashFlowRatio",
             "enterpriseValueMultiple",
-            # --- Cash flow quality ---
             "operatingCashFlowSalesRatio",
             "freeCashFlowOperatingCashFlowRatio",
-            # --- Dividend ---
             "dividendPayoutRatio", "dividendYield",
-            # --- Tax ---
             "effectiveTaxRate"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            # Margins
+            "grossProfitMargin": "gross_margin",
+            "ebitMargin": "ebit_margin",
+            "ebitdaMargin": "ebitda_margin",
+            "operatingProfitMargin": "operating_margin",
+            "netProfitMargin": "net_margin",
+            # Turnover
+            "receivablesTurnover": "receivables_turnover",
+            "payablesTurnover": "payables_turnover",
+            "inventoryTurnover": "inventory_turnover",
+            "fixedAssetTurnover": "fixed_asset_turnover",
+            "assetTurnover": "asset_turnover",
+            # Liquidity
+            "currentRatio": "current_ratio",
+            "quickRatio": "quick_ratio",
+            # Leverage
+            "debtToEquityRatio": "debt_to_equity",
+            "debtToAssetsRatio": "debt_to_assets",
+            "financialLeverageRatio": "financial_leverage",
+            "interestCoverageRatio": "interest_coverage",
+            # Valuation
+            "priceToEarningsRatio": "pe_ratio",
+            "priceToBookRatio": "pb_ratio",
+            "priceToSalesRatio": "ps_ratio",
+            "priceToFreeCashFlowRatio": "p_to_fcf",
+            "enterpriseValueMultiple": "ev_multiple",
+            # Cash flow quality
+            "operatingCashFlowSalesRatio": "ocf_to_sales",
+            "freeCashFlowOperatingCashFlowRatio": "fcf_to_ocf",
+            # Dividend
+            "dividendPayoutRatio": "dividend_payout_ratio",
+            "dividendYield": "dividend_yield",
+            # Tax
+            "effectiveTaxRate": "effective_tax_rate"
+        },
         "drop": [
             "reportedCurrency",
-            # --- Redundant margins ---
             "pretaxProfitMargin",
             "continuousOperationsProfitMargin",
             "bottomLineProfitMargin",
-            # --- Redundant leverage ---
             "debtToCapitalRatio", "longTermDebtToCapitalRatio",
             "solvencyRatio", "cashRatio",
-            # --- Redundant valuation ---
             "priceToEarningsGrowthRatio",
             "forwardPriceToEarningsGrowthRatio",
             "priceToOperatingCashFlowRatio",
             "priceToFairValue", "debtToMarketCap",
-            # --- Redundant coverage ---
             "workingCapitalTurnoverRatio",
             "operatingCashFlowRatio",
             "debtServiceCoverageRatio",
@@ -250,16 +583,13 @@ schema_map = {
             "operatingCashFlowCoverageRatio",
             "capitalExpenditureCoverageRatio",
             "dividendPaidAndCapexCoverageRatio",
-            # --- Per-share (derivable from statements) ---
             "revenuePerShare", "netIncomePerShare",
             "interestDebtPerShare", "cashPerShare",
             "bookValuePerShare", "tangibleBookValuePerShare",
             "shareholdersEquityPerShare",
             "operatingCashFlowPerShare", "capexPerShare",
             "freeCashFlowPerShare",
-            # --- DuPont sub-components ---
             "netIncomePerEBT", "ebtPerEbit",
-            # --- Redundant ---
             "dividendYieldPercentage", "dividendPerShare"
         ]
     },
@@ -272,7 +602,6 @@ schema_map = {
             "operatingIncomeGrowth", "netIncomeGrowth",
             "epsdilutedGrowth", "ebitdaGrowth",
             "operatingCashFlowGrowth", "freeCashFlowGrowth",
-            # --- Multi-year CAGRs (not easily derivable) ---
             "threeYRevenueGrowthPerShare",
             "fiveYRevenueGrowthPerShare",
             "tenYRevenueGrowthPerShare",
@@ -283,6 +612,29 @@ schema_map = {
             "fiveYOperatingCFGrowthPerShare",
             "tenYOperatingCFGrowthPerShare"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "fiscalYear": "fiscal_year",
+            "period": "period",
+            "revenueGrowth": "revenue_growth",
+            "grossProfitGrowth": "gross_profit_growth",
+            "operatingIncomeGrowth": "operating_income_growth",
+            "netIncomeGrowth": "net_income_growth",
+            "epsdilutedGrowth": "eps_diluted_growth",
+            "ebitdaGrowth": "ebitda_growth",
+            "operatingCashFlowGrowth": "operating_cf_growth",
+            "freeCashFlowGrowth": "fcf_growth",
+            "threeYRevenueGrowthPerShare": "revenue_cagr_3y",
+            "fiveYRevenueGrowthPerShare": "revenue_cagr_5y",
+            "tenYRevenueGrowthPerShare": "revenue_cagr_10y",
+            "threeYNetIncomeGrowthPerShare": "net_income_cagr_3y",
+            "fiveYNetIncomeGrowthPerShare": "net_income_cagr_5y",
+            "tenYNetIncomeGrowthPerShare": "net_income_cagr_10y",
+            "threeYOperatingCFGrowthPerShare": "operating_cf_cagr_3y",
+            "fiveYOperatingCFGrowthPerShare": "operating_cf_cagr_5y",
+            "tenYOperatingCFGrowthPerShare": "operating_cf_cagr_10y"
+        },
         "drop": [
             "reportedCurrency",
             "ebitgrowth", "epsgrowth",
@@ -313,6 +665,16 @@ schema_map = {
             "minusCashAndCashEquivalents", "addTotalDebt",
             "enterpriseValue"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "stockPrice": "stock_price",
+            "numberOfShares": "shares_outstanding",
+            "marketCapitalization": "market_cap",
+            "minusCashAndCashEquivalents": "minus_cash",
+            "addTotalDebt": "plus_total_debt",
+            "enterpriseValue": "enterprise_value"
+        },
         "drop": []
     },
 
@@ -326,6 +688,16 @@ schema_map = {
             "revenueAvg", "ebitdaAvg", "netIncomeAvg", "epsAvg",
             "numAnalystsRevenue", "numAnalystsEps"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "revenueAvg": "est_revenue_avg",
+            "ebitdaAvg": "est_ebitda_avg",
+            "netIncomeAvg": "est_net_income_avg",
+            "epsAvg": "est_eps_avg",
+            "numAnalystsRevenue": "num_analysts_revenue",
+            "numAnalystsEps": "num_analysts_eps"
+        },
         "drop": [
             "revenueLow", "revenueHigh",
             "ebitdaLow", "ebitdaHigh",
@@ -342,6 +714,14 @@ schema_map = {
             "symbol", "date",
             "adjDividend", "dividend", "yield", "frequency"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "adjDividend": "adj_dividend",
+            "dividend": "dividend",
+            "yield": "dividend_yield",
+            "frequency": "frequency"
+        },
         "drop": [
             "recordDate", "paymentDate", "declarationDate"
         ]
@@ -355,32 +735,18 @@ schema_map = {
             "returnOnAssetsScore", "debtToEquityScore",
             "priceToEarningsScore", "priceToBookScore"
         ],
+        "rename": {
+            "symbol": "ticker",
+            "date": "date",
+            "rating": "rating",
+            "overallScore": "overall_score",
+            "discountedCashFlowScore": "dcf_score",
+            "returnOnEquityScore": "roe_score",
+            "returnOnAssetsScore": "roa_score",
+            "debtToEquityScore": "de_score",
+            "priceToEarningsScore": "pe_score",
+            "priceToBookScore": "pb_score"
+        },
         "drop": []
-    },
-
-    # ======================== SEGMENTATION ========================
-    # PK: (symbol, date)
-    # NOTE: parse the 'data' JSON column into individual segment columns
-
-    "revenue-geographic-segmentation.csv": {
-        "primary_key": ["symbol", "date"],
-        "keep": [
-            "symbol", "date", "fiscalYear", "data"
-        ],
-        "drop": [
-            "period", "reportedCurrency"
-        ],
-        "note": "Parse 'data' dict into columns: CHINA, TAIWAN, UNITED_STATES, OTHER_AMERICAS, etc."
-    },
-
-    "revenue-product-segmentation.csv": {
-        "primary_key": ["symbol", "date"],
-        "keep": [
-            "symbol", "date", "fiscalYear", "data"
-        ],
-        "drop": [
-            "period", "reportedCurrency"
-        ],
-        "note": "Parse 'data' dict into columns: Data_Center, Gaming, Automotive, Professional_Visualization, OEM_And_Other"
     },
 }

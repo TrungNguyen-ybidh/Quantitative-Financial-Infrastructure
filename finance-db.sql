@@ -1,458 +1,510 @@
--- MySQL dump 10.13  Distrib 9.6.0, for macos26.2 (arm64)
---
--- Host: 127.0.0.1    Database: finance_db
--- ------------------------------------------------------
--- Server version	9.4.0
+-- ============================================================================
+-- finance_db — Full Schema
+-- ============================================================================
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Drop all tables (children first)
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS dividends;
+DROP TABLE IF EXISTS estimates;
+DROP TABLE IF EXISTS ev;
+DROP TABLE IF EXISTS growth;
+DROP TABLE IF EXISTS ratios;
+DROP TABLE IF EXISTS metrics;
+DROP TABLE IF EXISTS income_stmt_growth;
+DROP TABLE IF EXISTS cashflow_growth;
+DROP TABLE IF EXISTS balance_sheet_growth;
+DROP TABLE IF EXISTS cashflow;
+DROP TABLE IF EXISTS balance_sheet;
+DROP TABLE IF EXISTS income_stmt;
+DROP TABLE IF EXISTS dcf_levered;
+DROP TABLE IF EXISTS dcf;
+DROP TABLE IF EXISTS scores;
+DROP TABLE IF EXISTS quotes;
+DROP TABLE IF EXISTS companies;
 
---
--- Table structure for table `analyst_ratings`
---
+-- ============================================================================
+-- COMPANIES (parent table — populate first)
+-- source: profile.csv
+-- ============================================================================
+CREATE TABLE companies (
+    ticker                VARCHAR(10) NOT NULL,
+    company_name          VARCHAR(255),
+    price                 DECIMAL(15,4),
+    market_cap            BIGINT,
+    beta                  DECIMAL(8,4),
+    sector                VARCHAR(100),
+    industry              VARCHAR(150),
+    country               VARCHAR(50),
+    cik                   INT,
+    isin                  VARCHAR(20),
+    cusip                 VARCHAR(20),
+    exchange              VARCHAR(20),
+    ceo                   VARCHAR(100),
+    full_time_employees   INT,
+    ipo_date              DATE,
+    description           TEXT,
+    PRIMARY KEY (ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `analyst_ratings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `analyst_ratings` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `date` date NOT NULL,
-  `firm` varchar(100) DEFAULT NULL,
-  `analyst` varchar(100) DEFAULT NULL,
-  `rating` varchar(50) DEFAULT NULL,
-  `previous_rating` varchar(50) DEFAULT NULL,
-  `action` enum('init','upgrade','downgrade','maintain','reiterate') DEFAULT NULL,
-  `price_target` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `analyst_ratings_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ============================================================================
+-- QUOTES (snapshot)
+-- source: quote.csv
+-- ============================================================================
+CREATE TABLE quotes (
+    ticker                VARCHAR(10) NOT NULL,
+    name                  VARCHAR(255),
+    price                 DECIMAL(15,4),
+    market_cap            BIGINT,
+    year_high             DECIMAL(15,4),
+    year_low              DECIMAL(15,4),
+    price_avg_50          DECIMAL(15,4),
+    price_avg_200         DECIMAL(15,4),
+    volume                BIGINT,
+    PRIMARY KEY (ticker),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `analyst_ratings`
---
+-- ============================================================================
+-- SCORES (snapshot)
+-- source: financial-scores.csv
+-- ============================================================================
+CREATE TABLE scores (
+    ticker                VARCHAR(10) NOT NULL,
+    altman_z_score        DECIMAL(10,4),
+    piotroski_score       INT,
+    working_capital       BIGINT,
+    total_assets          BIGINT,
+    retained_earnings     BIGINT,
+    ebit                  BIGINT,
+    market_cap            BIGINT,
+    total_liabilities     BIGINT,
+    revenue               BIGINT,
+    PRIMARY KEY (ticker),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `analyst_ratings` WRITE;
-/*!40000 ALTER TABLE `analyst_ratings` DISABLE KEYS */;
-/*!40000 ALTER TABLE `analyst_ratings` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ============================================================================
+-- DCF (time-series)
+-- source: discounted-cash-flow.csv
+-- ============================================================================
+CREATE TABLE dcf (
+    ticker                VARCHAR(10) NOT NULL,
+    date                  DATE NOT NULL,
+    dcf                   DECIMAL(15,4),
+    stock_price           DECIMAL(15,4),
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `balance_sheet`
---
+-- ============================================================================
+-- DCF_LEVERED (time-series)
+-- source: levered-discounted-cash-flow.csv
+-- ============================================================================
+CREATE TABLE dcf_levered (
+    ticker                VARCHAR(10) NOT NULL,
+    date                  DATE NOT NULL,
+    levered_dcf           DECIMAL(15,4),
+    stock_price           DECIMAL(15,4),
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `balance_sheet`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `balance_sheet` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `period_date` date NOT NULL,
-  `period_type` enum('annual','quarterly') NOT NULL,
-  `cash` bigint DEFAULT NULL,
-  `short_term_investment` bigint DEFAULT NULL,
-  `total_current_asset` bigint DEFAULT NULL,
-  `total_assets` bigint DEFAULT NULL,
-  `total_current_liabilities` bigint DEFAULT NULL,
-  `total_liabilities` bigint DEFAULT NULL,
-  `total_equity` bigint DEFAULT NULL,
-  `total_debt` bigint DEFAULT NULL,
-  `net_debt` bigint DEFAULT NULL,
-  `retained_earnings` bigint DEFAULT NULL,
-  `fiscal_year` varchar(10) DEFAULT NULL,
-  `goodwill` bigint DEFAULT NULL,
-  `intangible_assets` bigint DEFAULT NULL,
-  `ppe_net` bigint DEFAULT NULL,
-  `long_term_debt` bigint DEFAULT NULL,
-  `short_term_debt` bigint DEFAULT NULL,
-  `stockholders_equity` bigint DEFAULT NULL,
-  `accounts_payable` bigint DEFAULT NULL,
-  `inventory` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `balance_sheet_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ============================================================================
+-- INCOME_STMT (time-series)
+-- source: income-statement.csv
+-- ============================================================================
+CREATE TABLE income_stmt (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    fiscal_year                 VARCHAR(10),
+    period                      VARCHAR(10) NOT NULL,
+    revenue                     BIGINT,
+    cost_of_revenue             BIGINT,
+    gross_profit                BIGINT,
+    rd_expenses                 BIGINT,
+    sga_expenses                BIGINT,
+    operating_expenses          BIGINT,
+    operating_income            BIGINT,
+    interest_income             BIGINT,
+    interest_expense            BIGINT,
+    depreciation_amortization   BIGINT,
+    ebitda                      BIGINT,
+    ebit                        BIGINT,
+    income_before_tax           BIGINT,
+    income_tax_expense          BIGINT,
+    net_income                  BIGINT,
+    eps                         DECIMAL(10,4),
+    eps_diluted                 DECIMAL(10,4),
+    shares_outstanding          BIGINT,
+    shares_outstanding_diluted  BIGINT,
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `balance_sheet`
---
+-- ============================================================================
+-- BALANCE_SHEET (time-series)
+-- source: balance-sheet-statement.csv
+-- ============================================================================
+CREATE TABLE balance_sheet (
+    ticker                       VARCHAR(10) NOT NULL,
+    date                         DATE NOT NULL,
+    fiscal_year                  VARCHAR(10),
+    period                       VARCHAR(10) NOT NULL,
+    cash                         BIGINT,
+    short_term_investments       BIGINT,
+    cash_and_short_term_investments BIGINT,
+    net_receivables              BIGINT,
+    inventory                    BIGINT,
+    total_current_assets         BIGINT,
+    ppe_net                      BIGINT,
+    goodwill                     BIGINT,
+    intangible_assets            BIGINT,
+    long_term_investments        BIGINT,
+    tax_assets                   BIGINT,
+    total_non_current_assets     BIGINT,
+    total_assets                 BIGINT,
+    accounts_payable             BIGINT,
+    accrued_expenses             BIGINT,
+    short_term_debt              BIGINT,
+    deferred_revenue             BIGINT,
+    total_current_liabilities    BIGINT,
+    long_term_debt               BIGINT,
+    total_non_current_liabilities BIGINT,
+    total_liabilities            BIGINT,
+    retained_earnings            BIGINT,
+    additional_paid_in_capital   BIGINT,
+    stockholders_equity          BIGINT,
+    total_equity                 BIGINT,
+    total_debt                   BIGINT,
+    net_debt                     BIGINT,
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `balance_sheet` WRITE;
-/*!40000 ALTER TABLE `balance_sheet` DISABLE KEYS */;
-/*!40000 ALTER TABLE `balance_sheet` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ============================================================================
+-- CASHFLOW (time-series)
+-- source: cash-flow-statement.csv
+-- ============================================================================
+CREATE TABLE cashflow (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    fiscal_year                 VARCHAR(10),
+    period                      VARCHAR(10) NOT NULL,
+    net_income                  BIGINT,
+    depreciation_amortization   BIGINT,
+    stock_based_compensation    BIGINT,
+    deferred_income_tax         BIGINT,
+    change_in_working_capital   BIGINT,
+    cash_from_operations        BIGINT,
+    ppe_investments             BIGINT,
+    acquisitions_net            BIGINT,
+    purchases_of_investments    BIGINT,
+    sales_of_investments        BIGINT,
+    cash_from_investing         BIGINT,
+    net_debt_issuance           BIGINT,
+    stock_repurchased           BIGINT,
+    dividends_paid              BIGINT,
+    cash_from_financing         BIGINT,
+    operating_cash_flow         BIGINT,
+    capex                       BIGINT,
+    free_cash_flow              BIGINT,
+    income_taxes_paid           BIGINT,
+    interest_paid               BIGINT,
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `cash_flow`
---
+-- ============================================================================
+-- BALANCE_SHEET_GROWTH (time-series)
+-- source: balance-sheet-statement-growth.csv
+-- ============================================================================
+CREATE TABLE balance_sheet_growth (
+    ticker                          VARCHAR(10) NOT NULL,
+    date                            DATE NOT NULL,
+    fiscal_year                     VARCHAR(10),
+    period                          VARCHAR(10) NOT NULL,
+    growth_total_assets             DECIMAL(12,6),
+    growth_total_liabilities        DECIMAL(12,6),
+    growth_total_equity             DECIMAL(12,6),
+    growth_total_debt               DECIMAL(12,6),
+    growth_net_debt                 DECIMAL(12,6),
+    growth_total_current_assets     DECIMAL(12,6),
+    growth_total_current_liabilities DECIMAL(12,6),
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `cash_flow`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cash_flow` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `period_date` date NOT NULL,
-  `period_type` enum('annual','quarterly') DEFAULT NULL,
-  `operating_cash_flow` bigint DEFAULT NULL,
-  `investing_cash_flow` bigint DEFAULT NULL,
-  `financing_cash_flow` bigint DEFAULT NULL,
-  `free_cash_flow` bigint DEFAULT NULL,
-  `capex` bigint DEFAULT NULL,
-  `dividends_paid` bigint DEFAULT NULL,
-  `net_change_in_cash` bigint DEFAULT NULL,
-  `fiscal_year` varchar(10) DEFAULT NULL,
-  `net_income` bigint DEFAULT NULL,
-  `depreciation_amortization` bigint DEFAULT NULL,
-  `stock_based_compensation` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `cash_flow_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ============================================================================
+-- CASHFLOW_GROWTH (time-series)
+-- source: cash-flow-statement-growth.csv
+-- ============================================================================
+CREATE TABLE cashflow_growth (
+    ticker                          VARCHAR(10) NOT NULL,
+    date                            DATE NOT NULL,
+    fiscal_year                     VARCHAR(10),
+    period                          VARCHAR(10) NOT NULL,
+    growth_operating_cash_flow      DECIMAL(12,6),
+    growth_free_cash_flow           DECIMAL(12,6),
+    growth_capex                    DECIMAL(12,6),
+    growth_net_change_in_cash       DECIMAL(12,6),
+    growth_dividends_paid           DECIMAL(12,6),
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `cash_flow`
---
+-- ============================================================================
+-- INCOME_STMT_GROWTH (time-series)
+-- source: income-statement-growth.csv
+-- ============================================================================
+CREATE TABLE income_stmt_growth (
+    ticker                          VARCHAR(10) NOT NULL,
+    date                            DATE NOT NULL,
+    fiscal_year                     VARCHAR(10),
+    period                          VARCHAR(10) NOT NULL,
+    growth_revenue                  DECIMAL(12,6),
+    growth_gross_profit             DECIMAL(12,6),
+    growth_operating_income         DECIMAL(12,6),
+    growth_net_income               DECIMAL(12,6),
+    growth_ebitda                   DECIMAL(12,6),
+    growth_eps                      DECIMAL(12,6),
+    growth_eps_diluted              DECIMAL(12,6),
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `cash_flow` WRITE;
-/*!40000 ALTER TABLE `cash_flow` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cash_flow` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ============================================================================
+-- METRICS (time-series)
+-- source: key-metrics.csv
+-- ============================================================================
+CREATE TABLE metrics (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    fiscal_year                 VARCHAR(10),
+    period                      VARCHAR(10) NOT NULL,
+    market_cap                  BIGINT,
+    enterprise_value            BIGINT,
+    ev_to_sales                 DECIMAL(10,4),
+    ev_to_ebitda                DECIMAL(10,4),
+    ev_to_fcf                   DECIMAL(10,4),
+    net_debt_to_ebitda          DECIMAL(10,4),
+    current_ratio               DECIMAL(10,4),
+    income_quality              DECIMAL(10,4),
+    graham_number               DECIMAL(15,4),
+    working_capital             BIGINT,
+    invested_capital            BIGINT,
+    roa                         DECIMAL(10,6),
+    roe                         DECIMAL(10,6),
+    roic                        DECIMAL(10,6),
+    roce                        DECIMAL(10,6),
+    earnings_yield              DECIMAL(10,6),
+    fcf_yield                   DECIMAL(10,6),
+    rd_to_revenue               DECIMAL(10,6),
+    sbc_to_revenue              DECIMAL(10,6),
+    capex_to_revenue            DECIMAL(10,6),
+    days_sales_outstanding      DECIMAL(10,4),
+    days_payables_outstanding   DECIMAL(10,4),
+    days_inventory_outstanding  DECIMAL(10,4),
+    cash_conversion_cycle       DECIMAL(10,4),
+    fcf_to_equity               BIGINT,
+    fcf_to_firm                 BIGINT,
+    tangible_asset_value        BIGINT,
+    net_current_asset_value     BIGINT,
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `companies`
---
+-- ============================================================================
+-- RATIOS (time-series)
+-- source: ratios.csv
+-- ============================================================================
+CREATE TABLE ratios (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    fiscal_year                 VARCHAR(10),
+    period                      VARCHAR(10) NOT NULL,
+    -- Margins
+    gross_margin                DECIMAL(10,6),
+    ebit_margin                 DECIMAL(10,6),
+    ebitda_margin               DECIMAL(10,6),
+    operating_margin            DECIMAL(10,6),
+    net_margin                  DECIMAL(10,6),
+    -- Turnover
+    receivables_turnover        DECIMAL(10,4),
+    payables_turnover           DECIMAL(10,4),
+    inventory_turnover          DECIMAL(10,4),
+    fixed_asset_turnover        DECIMAL(10,4),
+    asset_turnover              DECIMAL(10,4),
+    -- Liquidity
+    current_ratio               DECIMAL(10,4),
+    quick_ratio                 DECIMAL(10,4),
+    -- Leverage
+    debt_to_equity              DECIMAL(10,4),
+    debt_to_assets              DECIMAL(10,4),
+    financial_leverage          DECIMAL(10,4),
+    interest_coverage           DECIMAL(10,4),
+    -- Valuation
+    pe_ratio                    DECIMAL(10,4),
+    pb_ratio                    DECIMAL(10,4),
+    ps_ratio                    DECIMAL(10,4),
+    p_to_fcf                    DECIMAL(10,4),
+    ev_multiple                 DECIMAL(10,4),
+    -- Cash flow quality
+    ocf_to_sales                DECIMAL(10,6),
+    fcf_to_ocf                  DECIMAL(10,6),
+    -- Dividend
+    dividend_payout_ratio       DECIMAL(10,6),
+    dividend_yield              DECIMAL(10,6),
+    -- Tax
+    effective_tax_rate          DECIMAL(10,6),
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `companies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `companies` (
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `sector` varchar(100) DEFAULT NULL,
-  `industry` varchar(150) DEFAULT NULL,
-  `exchange` varchar(20) DEFAULT NULL,
-  `country` varchar(50) DEFAULT 'US',
-  `currency` varchar(10) DEFAULT 'USD',
-  `market_cap` bigint DEFAULT NULL,
-  `ipo_date` date DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `is_etf` tinyint(1) DEFAULT '0',
-  `is_adr` tinyint(1) DEFAULT '0',
-  `is_fund` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`cik`),
-  UNIQUE KEY `ticker` (`ticker`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ============================================================================
+-- GROWTH (time-series)
+-- source: financial-growth.csv
+-- ============================================================================
+CREATE TABLE growth (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    fiscal_year                 VARCHAR(10),
+    period                      VARCHAR(10) NOT NULL,
+    revenue_growth              DECIMAL(12,6),
+    gross_profit_growth         DECIMAL(12,6),
+    operating_income_growth     DECIMAL(12,6),
+    net_income_growth           DECIMAL(12,6),
+    eps_diluted_growth          DECIMAL(12,6),
+    ebitda_growth               DECIMAL(12,6),
+    operating_cf_growth         DECIMAL(12,6),
+    fcf_growth                  DECIMAL(12,6),
+    -- Multi-year CAGRs
+    revenue_cagr_3y             DECIMAL(12,6),
+    revenue_cagr_5y             DECIMAL(12,6),
+    revenue_cagr_10y            DECIMAL(12,6),
+    net_income_cagr_3y          DECIMAL(12,6),
+    net_income_cagr_5y          DECIMAL(12,6),
+    net_income_cagr_10y         DECIMAL(12,6),
+    operating_cf_cagr_3y        DECIMAL(12,6),
+    operating_cf_cagr_5y        DECIMAL(12,6),
+    operating_cf_cagr_10y       DECIMAL(12,6),
+    PRIMARY KEY (ticker, date, period),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `companies`
---
+-- ============================================================================
+-- EV (time-series)
+-- source: enterprise-values.csv
+-- ============================================================================
+CREATE TABLE ev (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    stock_price                 DECIMAL(15,4),
+    shares_outstanding          BIGINT,
+    market_cap                  BIGINT,
+    minus_cash                  BIGINT,
+    plus_total_debt             BIGINT,
+    enterprise_value            BIGINT,
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `companies` WRITE;
-/*!40000 ALTER TABLE `companies` DISABLE KEYS */;
-/*!40000 ALTER TABLE `companies` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ============================================================================
+-- ESTIMATES (event time-series)
+-- source: analyst-estimates.csv
+-- ============================================================================
+CREATE TABLE estimates (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    est_revenue_avg             BIGINT,
+    est_ebitda_avg              BIGINT,
+    est_net_income_avg          BIGINT,
+    est_eps_avg                 DECIMAL(10,4),
+    num_analysts_revenue        INT,
+    num_analysts_eps            INT,
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Table structure for table `countries`
---
+-- ============================================================================
+-- DIVIDENDS (event time-series)
+-- source: dividends.csv
+-- ============================================================================
+CREATE TABLE dividends (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    adj_dividend                DECIMAL(10,4),
+    dividend                    DECIMAL(10,4),
+    dividend_yield              DECIMAL(10,6),
+    frequency                   VARCHAR(20),
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `countries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `countries` (
-  `country_id` smallint unsigned NOT NULL AUTO_INCREMENT,
-  `iso_code` char(3) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `region` varchar(50) DEFAULT NULL,
-  `currency` char(3) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`country_id`),
-  UNIQUE KEY `iso_code` (`iso_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ============================================================================
+-- RATINGS (event time-series)
+-- source: ratings-historical.csv
+-- ============================================================================
+CREATE TABLE ratings (
+    ticker                      VARCHAR(10) NOT NULL,
+    date                        DATE NOT NULL,
+    rating                      VARCHAR(10),
+    overall_score               INT,
+    dcf_score                   INT,
+    roe_score                   INT,
+    roa_score                   INT,
+    de_score                    INT,
+    pe_score                    INT,
+    pb_score                    INT,
+    PRIMARY KEY (ticker, date),
+    FOREIGN KEY (ticker) REFERENCES companies(ticker)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `countries`
---
 
-LOCK TABLES `countries` WRITE;
-/*!40000 ALTER TABLE `countries` DISABLE KEYS */;
-/*!40000 ALTER TABLE `countries` ENABLE KEYS */;
-UNLOCK TABLES;
+ALTER TABLE companies MODIFY beta DECIMAL(20,10);
+ALTER TABLE scores MODIFY altman_z_score DECIMAL(20,10);
 
---
--- Table structure for table `cpi`
---
+-- Widen all DECIMAL columns that are overflowing
+ALTER TABLE metrics MODIFY roa DECIMAL(20,10);
+ALTER TABLE metrics MODIFY roe DECIMAL(20,10);
+ALTER TABLE metrics MODIFY roic DECIMAL(20,10);
+ALTER TABLE metrics MODIFY roce DECIMAL(20,10);
+ALTER TABLE metrics MODIFY earnings_yield DECIMAL(20,10);
+ALTER TABLE metrics MODIFY fcf_yield DECIMAL(20,10);
+ALTER TABLE metrics MODIFY rd_to_revenue DECIMAL(20,10);
+ALTER TABLE metrics MODIFY sbc_to_revenue DECIMAL(20,10);
+ALTER TABLE metrics MODIFY capex_to_revenue DECIMAL(20,10);
+ALTER TABLE metrics MODIFY ev_to_sales DECIMAL(20,10);
+ALTER TABLE metrics MODIFY ev_to_ebitda DECIMAL(20,10);
+ALTER TABLE metrics MODIFY ev_to_fcf DECIMAL(20,10);
 
-DROP TABLE IF EXISTS `cpi`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cpi` (
-  `cpi_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `country_id` smallint unsigned NOT NULL,
-  `date` date NOT NULL,
-  `cpi_headline` decimal(10,4) DEFAULT NULL,
-  `core_cpi` decimal(10,4) DEFAULT NULL,
-  `cpi_food` decimal(10,4) DEFAULT NULL,
-  `cpi_energy` decimal(10,4) DEFAULT NULL,
-  `pce_headline` decimal(10,4) DEFAULT NULL,
-  `core_pce` decimal(10,4) DEFAULT NULL,
-  `cpi_headline_yoy` decimal(8,4) DEFAULT NULL,
-  `cpi_headline_mom` decimal(8,4) DEFAULT NULL,
-  `core_cpi_yoy` decimal(8,4) DEFAULT NULL,
-  `core_cpi_mom` decimal(8,4) DEFAULT NULL,
-  PRIMARY KEY (`cpi_id`),
-  UNIQUE KEY `uq_country_date` (`country_id`,`date`),
-  CONSTRAINT `cpi_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+ALTER TABLE ratios MODIFY gross_margin DECIMAL(20,10);
+ALTER TABLE ratios MODIFY ebit_margin DECIMAL(20,10);
+ALTER TABLE ratios MODIFY ebitda_margin DECIMAL(20,10);
+ALTER TABLE ratios MODIFY operating_margin DECIMAL(20,10);
+ALTER TABLE ratios MODIFY net_margin DECIMAL(20,10);
+ALTER TABLE ratios MODIFY ocf_to_sales DECIMAL(20,10);
+ALTER TABLE ratios MODIFY fcf_to_ocf DECIMAL(20,10);
+ALTER TABLE ratios MODIFY dividend_payout_ratio DECIMAL(20,10);
+ALTER TABLE ratios MODIFY dividend_yield DECIMAL(20,10);
+ALTER TABLE ratios MODIFY effective_tax_rate DECIMAL(20,10);
 
---
--- Dumping data for table `cpi`
---
+ALTER TABLE growth MODIFY revenue_cagr_3y DECIMAL(20,10);
+ALTER TABLE growth MODIFY revenue_cagr_5y DECIMAL(20,10);
+ALTER TABLE growth MODIFY revenue_cagr_10y DECIMAL(20,10);
+ALTER TABLE growth MODIFY net_income_cagr_3y DECIMAL(20,10);
+ALTER TABLE growth MODIFY net_income_cagr_5y DECIMAL(20,10);
+ALTER TABLE growth MODIFY net_income_cagr_10y DECIMAL(20,10);
+ALTER TABLE growth MODIFY operating_cf_cagr_3y DECIMAL(20,10);
+ALTER TABLE growth MODIFY operating_cf_cagr_5y DECIMAL(20,10);
+ALTER TABLE growth MODIFY operating_cf_cagr_10y DECIMAL(20,10);
+ALTER TABLE growth MODIFY revenue_growth DECIMAL(20,10);
+ALTER TABLE growth MODIFY operating_income_growth DECIMAL(20,10);
+ALTER TABLE growth MODIFY net_income_growth DECIMAL(20,10);
+ALTER TABLE growth MODIFY operating_cf_growth DECIMAL(20,10);
+ALTER TABLE growth MODIFY fcf_growth DECIMAL(20,10);
 
-LOCK TABLES `cpi` WRITE;
-/*!40000 ALTER TABLE `cpi` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cpi` ENABLE KEYS */;
-UNLOCK TABLES;
+ALTER TABLE ev MODIFY stock_price DECIMAL(20,10);
 
---
--- Table structure for table `dividends`
---
+ALTER TABLE estimates MODIFY est_eps_avg DECIMAL(20,10);
 
-DROP TABLE IF EXISTS `dividends`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dividends` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `ex_date` date NOT NULL,
-  `payment_date` date DEFAULT NULL,
-  `record_date` date DEFAULT NULL,
-  `declaration_date` date DEFAULT NULL,
-  `amount` decimal(10,4) DEFAULT NULL,
-  `frequency` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `dividends_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dividends`
---
-
-LOCK TABLES `dividends` WRITE;
-/*!40000 ALTER TABLE `dividends` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dividends` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `financial_ratios`
---
-
-DROP TABLE IF EXISTS `financial_ratios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `financial_ratios` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `date` date NOT NULL,
-  `beta` decimal(6,4) DEFAULT NULL,
-  `pe_ratio` decimal(10,4) DEFAULT NULL,
-  `pb_ratio` decimal(10,4) DEFAULT NULL,
-  `ps_ratio` decimal(10,4) DEFAULT NULL,
-  `ev_ebitda` decimal(10,4) DEFAULT NULL,
-  `ev_revenue` decimal(10,4) DEFAULT NULL,
-  `roe` decimal(10,4) DEFAULT NULL,
-  `roa` decimal(10,4) DEFAULT NULL,
-  `debt_to_equity` decimal(10,4) DEFAULT NULL,
-  `current_ratio` decimal(10,4) DEFAULT NULL,
-  `gross_margin` decimal(10,4) DEFAULT NULL,
-  `net_margin` decimal(10,4) DEFAULT NULL,
-  `asset_turnover` decimal(10,4) DEFAULT NULL,
-  `interest_coverage` decimal(10,4) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `financial_ratios_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `financial_ratios`
---
-
-LOCK TABLES `financial_ratios` WRITE;
-/*!40000 ALTER TABLE `financial_ratios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `financial_ratios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `gdp`
---
-
-DROP TABLE IF EXISTS `gdp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `gdp` (
-  `gdp_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `country_id` smallint unsigned NOT NULL,
-  `date` date NOT NULL,
-  `nominal_gdp` decimal(20,4) DEFAULT NULL,
-  `real_gdp` decimal(20,4) DEFAULT NULL,
-  `gdp_price_deflator` decimal(10,4) DEFAULT NULL,
-  `nominal_gdp_per_capita` decimal(14,4) DEFAULT NULL,
-  `real_gdp_per_capita` decimal(14,4) DEFAULT NULL,
-  `real_potential_gdp` decimal(20,4) DEFAULT NULL,
-  `real_gdp_growth_rate` decimal(8,4) DEFAULT NULL,
-  PRIMARY KEY (`gdp_id`),
-  UNIQUE KEY `uq_country_date` (`country_id`,`date`),
-  CONSTRAINT `gdp_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gdp`
---
-
-LOCK TABLES `gdp` WRITE;
-/*!40000 ALTER TABLE `gdp` DISABLE KEYS */;
-/*!40000 ALTER TABLE `gdp` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `income_statement`
---
-
-DROP TABLE IF EXISTS `income_statement`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `income_statement` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `period_date` date NOT NULL,
-  `period_type` enum('annual','quarterly') DEFAULT NULL,
-  `revenue` bigint DEFAULT NULL,
-  `cost_of_revenue` bigint DEFAULT NULL,
-  `gross_profit` bigint DEFAULT NULL,
-  `operating_expense` bigint DEFAULT NULL,
-  `operating_income` bigint DEFAULT NULL,
-  `net_income` bigint DEFAULT NULL,
-  `ebitda` bigint DEFAULT NULL,
-  `eps` decimal(10,4) DEFAULT NULL,
-  `shares_outstanding` bigint DEFAULT NULL,
-  `fiscal_year` varchar(10) DEFAULT NULL,
-  `depreciation_amortization` bigint DEFAULT NULL,
-  `income_tax_expense` bigint DEFAULT NULL,
-  `income_before_tax` bigint DEFAULT NULL,
-  `interest_expense` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `income_statement_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `income_statement`
---
-
-LOCK TABLES `income_statement` WRITE;
-/*!40000 ALTER TABLE `income_statement` DISABLE KEYS */;
-/*!40000 ALTER TABLE `income_statement` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `macro_indicators`
---
-
-DROP TABLE IF EXISTS `macro_indicators`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `macro_indicators` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
-  `indicator` varchar(100) NOT NULL,
-  `value` decimal(20,6) DEFAULT NULL,
-  `country` varchar(50) DEFAULT 'US',
-  `source` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_indicator_date` (`indicator`,`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `macro_indicators`
---
-
-LOCK TABLES `macro_indicators` WRITE;
-/*!40000 ALTER TABLE `macro_indicators` DISABLE KEYS */;
-/*!40000 ALTER TABLE `macro_indicators` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `price_daily`
---
-
-DROP TABLE IF EXISTS `price_daily`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `price_daily` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `cik` int NOT NULL,
-  `ticker` varchar(10) NOT NULL,
-  `date` date NOT NULL,
-  `open` decimal(15,4) DEFAULT NULL,
-  `high` decimal(15,4) DEFAULT NULL,
-  `low` decimal(15,4) DEFAULT NULL,
-  `close` decimal(15,4) DEFAULT NULL,
-  `adj_close` decimal(15,4) DEFAULT NULL,
-  `volume` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_ticker_date` (`ticker`,`date`),
-  KEY `cik` (`cik`),
-  CONSTRAINT `price_daily_ibfk_1` FOREIGN KEY (`cik`) REFERENCES `companies` (`cik`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `price_daily`
---
-
-LOCK TABLES `price_daily` WRITE;
-/*!40000 ALTER TABLE `price_daily` DISABLE KEYS */;
-/*!40000 ALTER TABLE `price_daily` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-03-24 14:14:30
+ALTER TABLE dividends MODIFY dividend_yield DECIMAL(20,10);
