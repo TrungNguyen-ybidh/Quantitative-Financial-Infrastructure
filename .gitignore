@@ -1,6 +1,11 @@
 # data
 data/
 
+#other
+.idea/
+.virtual_documents/
+.vscode/
+
 #config
 config/config.py
 
