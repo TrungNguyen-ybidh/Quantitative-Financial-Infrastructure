@@ -131,27 +131,34 @@ class YFinanceFetcher(Fetcher):
         super().__init__(symbols, root=root)
         self.chunk_size = chunk_size
 
-    def fetch(self, interval="1d", period=None, start_date=None, end_date=None):
+    def fetch(self, interval="1d", timesleep=45, period=None, start_date=None, end_date=None, csv=False):
         symbols = [t for t in self.symbols if isinstance(t, str)]
         chunks = [symbols[i:i + self.chunk_size]
-                  for i in range(0, len(symbols), self.chunk_size)]
+                for i in range(0, len(symbols), self.chunk_size)]
 
-        dfs = []
         for i, chunk in enumerate(chunks):
             try:
                 df = yf.download(chunk, interval=interval, period=period,
-                                 start=start_date, end=end_date)
+                                start=start_date, end=end_date)
                 df = df.stack(level='Ticker').reset_index()
                 df.rename(columns={'level_1': 'Ticker'}, inplace=True)
-                dfs.append(df)
+                
+                mode = 'w' if i == 0 else 'a'
+                header = i == 0
+                df.to_csv(f"{self.root}/daily_prices.csv", mode=mode, header=header, index=False)
+                
                 print(f"Chunk {i + 1}/{len(chunks)} done")
-                time.sleep(45)
+                time.sleep(timesleep)
+
             except Exception as e:
                 print(f"Chunk {i + 1} failed — waiting 2 min: {e}")
                 time.sleep(120)
                 continue
 
-        return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+        if csv:
+            return pd.read_csv(f"{self.root}/daily_prices.csv")
+        
+        return pd.read_csv(f"{self.root}/daily_prices.csv")
 
 
 

@@ -12,6 +12,32 @@ class Cleaner:
     def __init__(self, root):
         self.root = Path(root) if root else Path.cwd().parent
 
+    def ff_factor_clean(self, df, monthly=False, quarterly=False):
+        '''
+        make sure that when convert to csv, set infex = FALSE
+        '''
+
+        df.columns= df.columns.str.lower()
+        df_clean = df.rename(columns={
+            'unnamed: 0': 'date', 
+            'mkt-rf': 'market_excess_return', 
+            'smb': 'size_factor', 
+            'hml': 'value_factor', 
+            'rmw': 'profitability_factor', 
+            'cma': 'inveatment_factor', 
+            'rf': 'risk_free_rate'
+        })
+        df_clean['date'] = pd.to_datetime(df_clean['date'].astype('str'), format='%Y%m%d')
+
+        if monthly or quarterly:
+            df_clean = df_clean.set_index('date')
+            if monthly:
+                return df_clean.resample('ME').sum().round(2).reset_index()
+            else:
+                return df_clean.resample('QE').sum().round(2).reset_index()
+        
+        return df_clean
+
     def data_cleaning(self, df, existent=True):
         if existent:
             df.columns = df.columns.str.lower()
@@ -34,23 +60,32 @@ class Cleaner:
         
         return df_clean
 
-    def insert_to_sql(self, table, update=True, replace=False, file=None, df=None, conflict_cols=["ticker", "date"]):
+    def insert_to_sql(self, table, update=True, clean=True, replace=False, exist=False ,file=None, df=None, conflict_cols=["ticker", "date"]):
+
         if df is None and file is not None:
             df = pd.read_csv(f"{self.root}/cleaned/{file}")
             print(f"{file}: {list(df.columns)}")
-            df_clean = self.data_cleaning(df)
+            if clean:
+                if exist:
+                    df_clean = self.data_cleaning(df)
+                else:
+                    df_clean = self.data_cleaning(df, existent=False)
+
         elif df is not None:
             print(f"{table}: {list(df.columns)}")
             df_clean = self.data_cleaning(df)
 
         if replace:
             with engine.connect() as conn:
+                conn.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
                 conn.execute(text(f"TRUNCATE TABLE {table}"))
+                conn.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
                 conn.commit()
-            df_clean.to_sql(table, engine, if_exists="append", index=False)
+                df_clean.to_sql(table, conn, if_exists="append", index=False)
+                conn.commit()
             return
 
-        if update:
+        elif update:
             # Skip duplicates, only insert new rows
             df_clean.to_sql("temp_staging", engine, if_exists="replace", index=False)
             cols = ", ".join([f"`{c}`" for c in df_clean.columns])
